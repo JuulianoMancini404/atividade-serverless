@@ -11,10 +11,11 @@ O projeto integra três funções independentes hospedadas em diferentes provedo
 Desenvolver uma solução SaaS de RH capaz de:
 
 - Validar currículos automaticamente
-- Calcular salário líquido
-- Sugerir treinamentos para candidatos
+- Analisar palavras-chave técnicas
+- Calcular pontuação profissional
+- Estimar faixa salarial
+- Sugerir treinamentos personalizados
 - Demonstrar integração entre múltiplas clouds
-- Implementar tolerância a falhas (fallback)
 - Aplicar conceitos de computação distribuída e serverless
 
 ---
@@ -33,7 +34,8 @@ Desenvolver uma solução SaaS de RH capaz de:
 
 +----------------+   +----------------+   +----------------------+
 | AWS Lambda     |   | Azure Function |   | Google Cloud Function|
-| Validador CV   |   | Salário Líquido|   | Sugestão Treinamento |
+| Validador CV   |   | Estimativa     |   | Sugestão de Cursos   |
+| Pontuação      |   | Salarial       |   | Baseado em Skills    |
 +----------------+   +----------------+   +----------------------+
 ```
 
@@ -43,13 +45,13 @@ Desenvolver uma solução SaaS de RH capaz de:
 
 ## 1. AWS Lambda - Validador de Currículo
 
-Analisa palavras-chave presentes no currículo do candidato e gera uma pontuação baseada em aderência à vaga.
+Analisa palavras-chave presentes no currículo do candidato e gera uma pontuação baseada em aderência técnica.
 
 ### Entrada
 
 ```json
 {
-  "curriculo": "JavaScript AWS Docker React Node.js"
+  "resume_text": "Python AWS Docker React Terraform Kubernetes"
 }
 ```
 
@@ -57,7 +59,15 @@ Analisa palavras-chave presentes no currículo do candidato e gera uma pontuaç�
 
 ```json
 {
-  "pontuacao": 85
+  "score": 80,
+  "keywords_found": [
+    "python",
+    "aws",
+    "docker",
+    "react",
+    "terraform",
+    "kubernetes"
+  ]
 }
 ```
 
@@ -65,19 +75,35 @@ Analisa palavras-chave presentes no currículo do candidato e gera uma pontuaç�
 
 - AWS Lambda
 - API Gateway
-- Node.js
+- Python 3.11
+- REST API
+
+### Palavras-chave Avaliadas
+
+| Skill | Pontuação |
+|---|---|
+| Python | 15 |
+| AWS | 20 |
+| Azure | 20 |
+| GCP | 20 |
+| Docker | 10 |
+| Kubernetes | 15 |
+| Terraform | 15 |
+| React | 10 |
+| Node.js | 10 |
+| SQL | 10 |
 
 ---
 
-## 2. Azure Function - Calculadora de Salário Líquido
+## 2. Azure Function - Estimativa Salarial
 
-Recebe um salário bruto e retorna o valor líquido após descontos simulados.
+Recebe a pontuação do currículo e retorna uma estimativa de faixa salarial.
 
 ### Entrada
 
 ```json
 {
-  "salarioBruto": 5000
+  "score": 80
 }
 ```
 
@@ -85,8 +111,7 @@ Recebe um salário bruto e retorna o valor líquido após descontos simulados.
 
 ```json
 {
-  "salarioLiquido": 4120,
-  "descontos": 880
+  "salary_range": "R$ 7.000 - R$ 10.000"
 }
 ```
 
@@ -94,19 +119,33 @@ Recebe um salário bruto e retorna o valor líquido após descontos simulados.
 
 - Azure Functions
 - HTTP Trigger
-- JavaScript / C#
+- Python
+- REST API
+
+### Regras de Faixa Salarial
+
+| Pontuação | Faixa |
+|---|---|
+| 0 - 29 | R$ 2.000 - R$ 3.000 |
+| 30 - 59 | R$ 4.000 - R$ 6.000 |
+| 60 - 89 | R$ 7.000 - R$ 10.000 |
+| 90+ | R$ 12.000+ |
 
 ---
 
-## 3. Google Cloud Function - Sugestão de Treinamento
+## 3. Google Cloud Function - Sugestão de Treinamentos
 
-Com base na pontuação do currículo, retorna cursos recomendados para desenvolvimento profissional.
+Com base nas palavras-chave ausentes e na pontuação, o sistema sugere cursos específicos para evolução profissional.
 
 ### Entrada
 
 ```json
 {
-  "pontuacao": 60
+  "keywords_found": [
+    "python",
+    "docker"
+  ],
+  "score": 40
 }
 ```
 
@@ -114,10 +153,11 @@ Com base na pontuação do currículo, retorna cursos recomendados para desenvol
 
 ```json
 {
-  "cursos": [
-    "Docker Fundamentals",
+  "courses": [
     "AWS Cloud Practitioner",
-    "Node.js Avançado"
+    "Terraform Infrastructure as Code",
+    "Kubernetes Fundamentals",
+    "React Avançado"
   ]
 }
 ```
@@ -125,8 +165,23 @@ Com base na pontuação do currículo, retorna cursos recomendados para desenvol
 ### Tecnologias
 
 - Google Cloud Functions
-- HTTP Functions
-- Node.js
+- Flask
+- Python 3.11
+- REST API
+
+### Cursos Disponíveis
+
+| Skill Ausente | Curso Recomendado |
+|---|---|
+| AWS | AWS Cloud Practitioner |
+| Azure | Microsoft Azure Fundamentals |
+| GCP | Google Cloud Associate |
+| Docker | Docker Essentials |
+| Kubernetes | Kubernetes Fundamentals |
+| Terraform | Terraform Infrastructure as Code |
+| React | React Avançado |
+| Node.js | Node.js Completo |
+| SQL | SQL e Banco de Dados |
 
 ---
 
@@ -136,78 +191,43 @@ O frontend funciona como painel principal do sistema.
 
 ## Responsabilidades
 
-- Enviar dados para as 3 funções simultaneamente
-- Exibir os resultados em uma interface única
-- Tratar erros individualmente
-- Implementar fallback de serviços
-
----
-
-# Resiliência (Fallback)
-
-Caso um dos provedores fique indisponível:
-
-- O frontend continua funcionando
-- Apenas o módulo afetado exibe:
-
-```text
-Serviço Indisponível
-```
-
-Isso garante maior tolerância a falhas e melhor experiência para o usuário.
-
----
-
-# Deploy Multi-Cloud
-
-## AWS
-
-- AWS Lambda
-- API Gateway
-- CORS habilitado
-
-## Azure
-
-- Azure Functions
-- HTTP Trigger
-- CORS habilitado
-
-## Google Cloud
-
-- Google Cloud Functions
-- HTTP Public Invocation
-- CORS habilitado
-
----
-
-# Hospedagem do Frontend
-
-O frontend pode ser hospedado em:
-
-- AWS S3 Static Website Hosting
-- Azure Static Web Apps
-- Google Firebase Hosting
+- Upload do currículo (.txt)
+- Leitura do conteúdo do arquivo
+- Comunicação com múltiplas clouds
+- Exibição de pontuação
+- Exibição da faixa salarial
+- Exibição dos cursos recomendados
+- Tratamento de erros individuais
 
 ---
 
 # Estrutura do Projeto
 
 ```text
-project/
+project-root/
 │
-├── frontend/
+├── aws-lambda/
+│   ├── lambda_function.py
+│   ├── requirements.txt
+│   └── deploy.sh
+│
+├── azure-functions/
+│   ├── SalaryFunction/
+│   │   ├── __init__.py
+│   │   ├── function.json
+│   │   └── requirements.txt
+│   │
+│   └── host.json
+│
+├── google-functions/
+│   ├── main.py
+│   ├── requirements.txt
+│   └── deploy.sh
+│
+├── frontend-app/
 │   ├── index.html
 │   ├── style.css
 │   └── script.js
-│
-├── aws-lambda/
-│   └── index.js
-│
-├── azure-function/
-│   └── index.js
-│
-├── gcp-function/
-│   └── index.js
 │
 └── README.md
 ```
@@ -216,26 +236,141 @@ project/
 
 # Fluxo da Aplicação
 
-1. Usuário envia currículo e salário bruto
-2. Frontend chama:
-   - AWS Lambda → pontuação do currículo
-   - Azure Function → salário líquido
-3. Resultado da pontuação é enviado para:
-   - Google Cloud Function → cursos recomendados
-4. Dados são exibidos no dashboard
+1. Usuário realiza upload do currículo
+2. Frontend lê o conteúdo do arquivo `.txt`
+3. Frontend envia o currículo para AWS Lambda
+4. AWS Lambda:
+   - Analisa palavras-chave
+   - Calcula pontuação
+   - Retorna skills encontradas
+5. Frontend envia a pontuação para Azure Function
+6. Azure Function retorna faixa salarial
+7. Frontend envia score + skills para Google Cloud Function
+8. Google retorna cursos recomendados
+9. Dashboard exibe todos os resultados
 
 ---
 
-# Tecnologias Utilizadas
+# Frontend
+
+## Tecnologias
 
 - HTML5
 - CSS3
-- JavaScript
-- AWS Lambda
-- API Gateway
-- Azure Functions
-- Google Cloud Functions
-- Firebase Hosting / S3 / Azure Static Web Apps
+- JavaScript Vanilla
+
+## Interface
+
+O frontend possui:
+
+- Upload de currículo
+- Dashboard de análise
+- Exibição dinâmica de resultados
+- Interface responsiva
+- Comunicação assíncrona via Fetch API
+
+---
+
+# Configuração de Endpoints
+
+No arquivo:
+
+```text
+/frontend-app/script.js
+```
+
+Substituir os endpoints:
+
+```javascript
+https://SEU-ENDPOINT-AWS.amazonaws.com/default/resume-score
+
+https://SEU-ENDPOINT-AZURE/api/salary
+
+https://SEU-ENDPOINT-GOOGLE
+```
+
+Pelos endpoints reais publicados.
+
+---
+
+# Deploy Multi-Cloud
+
+## AWS Lambda
+
+### Requisitos
+
+- AWS CLI
+- Conta AWS
+
+### Configuração
+
+```bash
+aws configure
+```
+
+### Deploy
+
+```bash
+cd aws-lambda
+
+chmod +x deploy.sh
+
+./deploy.sh
+```
+
+---
+
+## Azure Functions
+
+### Requisitos
+
+```bash
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
+```
+
+### Login
+
+```bash
+az login
+```
+
+### Deploy
+
+```bash
+cd azure-functions
+
+func azure functionapp publish NOME_DA_APP
+```
+
+---
+
+## Google Cloud Functions
+
+### Requisitos
+
+- Google Cloud SDK
+
+### Login
+
+```bash
+gcloud auth login
+```
+
+### Selecionar Projeto
+
+```bash
+gcloud config set project ID_DO_PROJETO
+```
+
+### Deploy
+
+```bash
+cd google-functions
+
+chmod +x deploy.sh
+
+./deploy.sh
+```
 
 ---
 
@@ -249,11 +384,46 @@ Access-Control-Allow-Origin: *
 
 Exemplo:
 
-```javascript
-headers: {
-  "Access-Control-Allow-Origin": "*"
+```python
+headers = {
+    "Access-Control-Allow-Origin": "*"
 }
 ```
+
+---
+
+# Hospedagem do Frontend
+
+O frontend pode ser hospedado em:
+
+- AWS S3 Static Website Hosting
+- Azure Static Web Apps
+- Google Firebase Hosting
+- Netlify
+- Vercel
+
+---
+
+# Tecnologias Utilizadas
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+## Backend
+
+- Python 3.11
+- Flask
+- APIs REST
+
+## Cloud Computing
+
+- AWS Lambda
+- API Gateway
+- Azure Functions
+- Google Cloud Functions
 
 ---
 
@@ -263,22 +433,30 @@ Este projeto demonstra:
 
 - Arquitetura Multi-Cloud
 - Computação Serverless
-- APIs HTTP
+- APIs REST
 - Integração distribuída
-- Resiliência de sistemas
 - Frontend desacoplado
+- Comunicação entre provedores cloud
+- SaaS distribuído
 - Deploy em nuvem
+- Escalabilidade serverless
 
 ---
 
 # Melhorias Futuras
 
-- Banco de dados para candidatos
-- Autenticação JWT
+- Upload de PDF
+- Upload DOCX
+- OCR para imagens
+- Inteligência Artificial para análise semântica
+- Banco de dados de candidatos
+- Login JWT
 - Dashboard administrativo
-- IA para análise de currículo
-- Integração com LinkedIn
-- Deploy automatizado com CI/CD
+- Integração LinkedIn
+- CI/CD automatizado
+- Monitoramento centralizado
+- Logs distribuídos
+- Dockerização completa
 
 ---
 
@@ -290,6 +468,7 @@ Projeto acadêmico desenvolvido para prática de:
 - Arquitetura Distribuída
 - Serverless Computing
 - Integração Multi-Cloud
+- SaaS Architecture
 
 ---
 
