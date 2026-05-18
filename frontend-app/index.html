@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS RH - Gestão de Talentos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <h1>SaaS RH - Gestão de Talentos</h1>
+            <p class="subtitle">
+                Faça upload do currículo e receba uma análise inteligente.
+            </p>
+
+            <div class="upload-area">
+                <input type="file" id="resumeFile" accept=".txt">
+                <small>
+                    Utilize arquivos .txt para simplificar a leitura.
+                </small>
+            </div>
+
+            <button id="analyzeBtn">
+                Analisar Currículo
+            </button>
+
+            <div class="result" id="result">
+                <h2>Resultado da Análise</h2>
+
+                <div class="result-item">
+                    <span>Pontuação:</span>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Faixa Salarial:</span>
+                    <strong id="salary">R$ 0</strong>
+                </div>
+
+                <div class="result-item courses">
+                    <span>Cursos Recomendados:</span>
+                    <ul id="coursesList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

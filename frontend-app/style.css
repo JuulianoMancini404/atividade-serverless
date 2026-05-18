@@ -1,0 +1,64 @@
+* {
+    color: #cbd5e1;
+    margin-bottom: 30px;
+}
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    padding: 12px;
+    background: #334155;
+    border-radius: 10px;
+    color: white;
+    border: none;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.result {
+    margin-top: 30px;
+    background: #334155;
+    padding: 20px;
+    border-radius: 15px;
+    display: none;
+}
+
+.result h2 {
+    margin-bottom: 20px;
+}
+
+.result-item {
+    margin-bottom: 15px;
+}
+
+.result-item span {
+    color: #cbd5e1;
+}
+
+.courses ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.courses li {
+    margin-bottom: 8px;
+}
