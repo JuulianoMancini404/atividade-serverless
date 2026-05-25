@@ -16,61 +16,46 @@ analyzeBtn.addEventListener('click', async () => {
     const text = await file.text();
 
     try {
-        // AWS Lambda
-        const scoreResponse = await fetch('https://SEU-ENDPOINT-AWS.amazonaws.com/default/resume-score', {
+        // 1. AWS Lambda
+        const scoreResponse = await fetch('https://xzrf4xu7tfj6uibsshfforlgi40ckxvh.lambda-url.sa-east-1.on.aws/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                resume_text: text
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resume_text: text })
         });
-
         const scoreData = await scoreResponse.json();
+        scoreElement.innerText = scoreData.score;
 
-        // Azure Function
-        const salaryResponse = await fetch('https://SEU-ENDPOINT-AZURE/api/salary', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                score: scoreData.score
-            })
+        // 2. Azure Function (CORRIGIDO)
+        const salaryResponse = await fetch('https://rh-calc-func1.azurewebsites.net/api/HttpTrigger?name=Candidato', {
+            method: 'GET'
         });
+        const salaryText = await salaryResponse.text();
+        salaryElement.innerText = salaryText;
 
-        const salaryData = await salaryResponse.json();
-
-        // Google Function
-        const coursesResponse = await fetch('https://SEU-ENDPOINT-GOOGLE', {
+        // 3. GCP Function
+        const coursesResponse = await fetch('https://us-central1-meu-rh-gcp.cloudfunctions.net/main', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 keywords_found: scoreData.keywords_found,
                 score: scoreData.score
             })
         });
-
         const coursesData = await coursesResponse.json();
-
-        scoreElement.innerText = scoreData.score;
-        salaryElement.innerText = salaryData.salary_range;
-
+        
         coursesList.innerHTML = '';
-
         coursesData.courses.forEach(course => {
             const li = document.createElement('li');
             li.innerText = course;
             coursesList.appendChild(li);
         });
 
-        resultDiv.style.display = 'block';
+        resultDiv.classList.remove('d-none');
+        resultDiv.classList.add('fade-in');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     } catch (error) {
-        console.error(error);
-        alert('Erro ao comunicar com os serviços cloud.');
+        console.error('Erro:', error);
+        alert('Erro ao comunicar com os serviços cloud: ' + error.message);
     }
 });

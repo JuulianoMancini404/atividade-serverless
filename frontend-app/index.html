@@ -4,49 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaaS RH - Gestão de Talentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-light text-dark">
 
-    <div class="container">
-        <div class="card">
-            <h1>SaaS RH - Gestão de Talentos</h1>
-            <p class="subtitle">
-                Faça upload do currículo e receba uma análise inteligente.
-            </p>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-lg overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-md-5 d-none d-md-block" style="background: linear-gradient(135deg,#e9f5ff 0%, #ffffff 100%);">
+                            <div class="p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                                
+                                <h3 class="mb-0">SaaS RH</h3>
+                                <p class="text-muted">Gestão de talentos com análise inteligente</p>
+                            </div>
+                        </div>
+                        <div class="col-md-7 bg-white">
+                            <div class="card-body p-4">
+                                <h1 class="h4 fw-bold">SaaS RH — Gestão de Talentos</h1>
+                                <p class="text-muted mb-4">Faça upload do currículo e receba uma análise objetiva e recomendações.</p>
 
-            <div class="upload-area">
-                <input type="file" id="resumeFile" accept=".txt">
-                <small>
-                    Utilize arquivos .txt para simplificar a leitura.
-                </small>
-            </div>
+                                <div class="mb-3">
+                                    <label for="resumeFile" class="form-label">Selecione o currículo (.txt)</label>
+                                    <input class="form-control" type="file" id="resumeFile" accept=".txt">
+                                    <div class="form-text">Utilize arquivos .txt para facilitar a análise automática.</div>
+                                </div>
 
-            <button id="analyzeBtn">
-                Analisar Currículo
-            </button>
+                                <button id="analyzeBtn" class="btn btn-primary w-100 mb-3">Analisar Currículo</button>
 
-            <div class="result" id="result">
-                <h2>Resultado da Análise</h2>
+                                <div id="result" class="d-none mt-3">
+                                    <div class="card border-light shadow-sm">
+                                        <div class="card-body">
+                                            <h2 class="h6 mb-3">Resultado da Análise</h2>
 
-                <div class="result-item">
-                    <span>Pontuação:</span>
-                    <strong id="score">0</strong>
-                </div>
+                                            <div class="mb-2 d-flex justify-content-between">
+                                                <span class="text-muted">Pontuação</span>
+                                                <strong id="score">0</strong>
+                                            </div>
 
-                <div class="result-item">
-                    <span>Faixa Salarial:</span>
-                    <strong id="salary">R$ 0</strong>
-                </div>
+                                            <div class="mb-2 d-flex justify-content-between">
+                                                <span class="text-muted">Faixa Salarial</span>
+                                                <strong id="salary">R$ 0</strong>
+                                            </div>
 
-                <div class="result-item courses">
-                    <span>Cursos Recomendados:</span>
-                    <ul id="coursesList"></ul>
+                                            <div class="mb-2">
+                                                <span class="text-muted">Cursos Recomendados</span>
+                                                <ul id="coursesList" class="list-unstyled mt-2 mb-0"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

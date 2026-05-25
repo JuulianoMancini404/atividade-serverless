@@ -1,64 +1,41 @@
-* {
-    color: #cbd5e1;
-    margin-bottom: 30px;
+:root{
+    --bg:#f6fbff;
+    --muted:#6b7280;
+    --accent:#2563eb;
+    --card:#ffffff;
 }
 
-.upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+*{box-sizing:border-box}
+
+body{
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background: linear-gradient(180deg, var(--bg) 0%, #ffffff 60%);
+    color: #0f172a;
 }
 
-input[type="file"] {
-    padding: 12px;
-    background: #334155;
-    border-radius: 10px;
-    color: white;
-    border: none;
+.card{border-radius:12px}
+
+input[type="file"].form-control{
+    border-radius:8px;
 }
 
-button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
+.btn-primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.12);
 }
 
-button:hover {
-    background: #1d4ed8;
-}
+.btn-primary:hover{background:#1e57d6;border-color:#1e57d6}
 
-.result {
-    margin-top: 30px;
-    background: #334155;
-    padding: 20px;
-    border-radius: 15px;
-    display: none;
-}
+.text-muted{color:var(--muted)!important}
 
-.result h2 {
-    margin-bottom: 20px;
-}
+.list-unstyled li{padding:6px 0;border-bottom:1px dashed #efefef}
 
-.result-item {
-    margin-bottom: 15px;
-}
+/* Result animation */
+.fade-in{animation:fadeInUp .5s ease both}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.result-item span {
-    color: #cbd5e1;
-}
-
-.courses ul {
-    margin-top: 10px;
-    padding-left: 20px;
-}
-
-.courses li {
-    margin-bottom: 8px;
+/* Small responsive tweaks */
+@media (max-width:767px){
+    .card .col-md-5{display:none}
 }
